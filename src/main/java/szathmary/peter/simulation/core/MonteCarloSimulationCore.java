@@ -1,10 +1,12 @@
 package szathmary.peter.simulation.core;
 
-/** Created by petos on 28/02/2024. */
-public abstract class MonteCarloSimulationCore {
-  private final int numberOfReplications;
+import szathmary.peter.gui.observable.IReplicationObservable;
 
-  public MonteCarloSimulationCore(int numberOfReplications) {
+/** Created by petos on 28/02/2024. */
+public abstract class MonteCarloSimulationCore implements IReplicationObservable {
+  private final long numberOfReplications;
+
+  public MonteCarloSimulationCore(long numberOfReplications) {
     this.numberOfReplications = numberOfReplications;
   }
 

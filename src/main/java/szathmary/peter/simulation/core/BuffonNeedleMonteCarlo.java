@@ -1,21 +1,28 @@
 package szathmary.peter.simulation.core;
 
+import java.util.ArrayList;
+import java.util.List;
+import szathmary.peter.gui.observable.IObserver;
 import szathmary.peter.randomgenerators.RandomGenerator;
 import szathmary.peter.randomgenerators.continuousgenerators.ContinuousUniformGenerator;
 
 /** Created by petos on 28/02/2024. */
-public class MortgageMonteCarlo extends MonteCarloSimulationCore {
+public class BuffonNeedleMonteCarlo extends MonteCarloSimulationCore {
   private final double d;
   private final double l;
+  private final List<IObserver> observers;
+  private double pi;
   private RandomGenerator<Double> alphaRandom;
   private RandomGenerator<Double> yRandom;
   private int crossed;
   private int numberOfThrows;
 
-  public MortgageMonteCarlo(int numberOfReplications, double d, double l) {
+  public BuffonNeedleMonteCarlo(long numberOfReplications, double d, double l) {
     super(numberOfReplications);
     this.d = d;
     this.l = l;
+
+    observers = new ArrayList<>();
   }
 
   @Override
@@ -25,6 +32,7 @@ public class MortgageMonteCarlo extends MonteCarloSimulationCore {
 
     crossed = 0;
     numberOfThrows = 0;
+    pi = 0;
   }
 
   @Override
@@ -41,17 +49,43 @@ public class MortgageMonteCarlo extends MonteCarloSimulationCore {
     if (a + y >= d) {
       crossed++;
     }
+
+    double p = (double) crossed / numberOfThrows;
+
+    pi = (2 * l) / (d * p);
   }
 
   @Override
-  public void afterReplication() {}
+  public void afterReplication() {
+    sendNotifications();
+  }
 
   @Override
   public void afterReplications() {
     double p = (double) crossed / numberOfThrows;
 
-    double pi = (2 * l) / (d * p);
+    pi = (2 * l) / (d * p);
+  }
 
-    System.out.println(pi);
+  @Override
+  public void attach(IObserver observer) {
+    observers.add(observer);
+  }
+
+  @Override
+  public void detach(IObserver observer) {
+    observers.remove(observer);
+  }
+
+  @Override
+  public void sendNotifications() {
+    for (IObserver observer : observers) {
+      observer.update(this);
+    }
+  }
+
+  @Override
+  public double getLastResult() {
+    return pi;
   }
 }
