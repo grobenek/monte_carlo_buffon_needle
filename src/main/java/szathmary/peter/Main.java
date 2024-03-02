@@ -9,7 +9,7 @@ import szathmary.peter.gui.view.IMainWindow;
 import szathmary.peter.gui.view.MainWindow;
 
 public class Main {
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     IModel model = new MonteCarloModel();
     IController controller = new MonteCarloController(model);
     IMainWindow mainWindow = new MainWindow(controller);
